@@ -13,4 +13,9 @@ class ExampleController extends BaseController
     {
         return "Hello from ExampleController";
     }
+
+    public function doSomething()
+    {
+        return "Hello from something";
+    }
 }
