@@ -1,5 +1,16 @@
 <?php
 
+
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader for
+| this application. We just need to utilize it! We'll simply require it
+| into the script here so we don't need to manually load our classes.
+|
+*/
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\ExampleController;
@@ -8,26 +19,39 @@ use FastRoute\RouteCollector;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
+use Dotenv\Dotenv;
 
 use function FastRoute\simpleDispatcher;
 
-$server = new Server("127.0.0.1", 9501);
 
-$server->on("start", function (Server $server) {
-    echo "Swoole http server is started at http://127.0.0.1:9501\n";
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
+$appUrl = $_ENV['APP_URL'];
+$appPort = $_ENV['APP_PORT'];
+
+$server = new Server($appUrl, $appPort);
+
+$server->on("start", function (Server $server) use($appUrl, $appPort) {
+    echo "Swoole http server is started at $appUrl:$appPort\n";
 });
 
 $server->on("request", function (Request $request, Response $response) {
 
-    //Create a dispatcher
+    /*
+    |--------------------------------------------------------------------------
+    | Implementing FastRoute simple dispatcher
+    |--------------------------------------------------------------------------
+    */
     $dispatcher = simpleDispatcher(function(RouteCollector $routeCollector){
         $routeCollector->get('/', [new ExampleController, 'index']);
+        $routeCollector->get('/env', function(){
+            return $_ENV['APP_URL'];
+        });
     });
 
     $response->header("Content-Type", "text/plain");
-    // $response->end(ExampleController::class);
 
-    // Fetch method and URI from somewhere
     $httpMethod = $request->server['request_method'];
     $uri = rawurldecode($request->server['request_uri']);
 
