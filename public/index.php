@@ -45,9 +45,6 @@ $server->on("request", function (Request $request, Response $response) {
     */
     $dispatcher = simpleDispatcher(function(RouteCollector $routeCollector){
         $routeCollector->get('/', [new ExampleController, 'index']);
-        $routeCollector->get('/env', function(){
-            return $_ENV['APP_URL'];
-        });
     });
 
     $response->header("Content-Type", "text/plain");
