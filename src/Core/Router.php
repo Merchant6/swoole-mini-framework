@@ -17,7 +17,7 @@ class Router
 
     }
 
-    public function router()
+    public function router() : void
     {
         /*
         |--------------------------------------------------------------------------
@@ -53,7 +53,7 @@ class Router
                 $vars = $routeInfo[2];
 
                 $responseText = $handler($vars);
-                $this->response->end($responseText);
+                $this->response->end(($responseText));
                 break;
         }
     }

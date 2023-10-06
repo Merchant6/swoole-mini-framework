@@ -26,8 +26,6 @@ $dotenv->load();
 $appUrl = $_ENV['APP_URL'];
 $appPort = $_ENV['APP_PORT'];
 
-
-
 $server = new Server($appUrl, $appPort);
 
 $server->on("start", function (Server $server) use($appUrl, $appPort) {
