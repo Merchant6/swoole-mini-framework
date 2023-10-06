@@ -15,12 +15,11 @@ class ExampleController extends BaseController
 
     public function index(): mixed
     {
-        $test = DB::builder()
-        ->select('id', 'name', 'email')
-        ->from('test')
-        ->fetchAllAssociative();
+        // $test = DB::all('test', ['id', 'name', 'email']);
+        // $test = DB::find('test', 0);
+        $test = DB::findOrFail('test', 10);
 
-        return Response::send($test);
+        return Response::send(['data' => $test]);
     }
 
     public function doSomething()
