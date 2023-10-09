@@ -6,20 +6,16 @@ use App\Database\DB;
 
 class ExampleController extends BaseController
 {
-    protected $db;
-
     public function __construct()
     {
-        $this->db = new DB();
+        
     }
 
     public function index(): mixed
     {
-        // $test = DB::all('test', ['id', 'name', 'email']);
-        // $test = DB::find('test', 0);
-        $test = DB::findOrFail('test', 10);
+        $test = DB::find('swoole', 1000);
 
-        return Response::send(['data' => $test]);
+        return Response::send(['data' => $test], 200);
     }
 
     public function doSomething()

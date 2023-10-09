@@ -53,7 +53,8 @@ class Router
                 $vars = $routeInfo[2];
 
                 $responseText = $handler($vars);
-                $this->response->end(($responseText));
+                $this->response->status(\App\Core\Response::$status);
+                $this->response->end($responseText);
                 break;
         }
     }
