@@ -8,12 +8,14 @@ use Doctrine\ORM\Tools\Setup;
 
 class Entity
 {
+    /**
+     * @var EntityManager
+     */
     protected EntityManager $entityManager;
 
     public function __construct()
     {
-        $dbConfig = new DbConfig();
-        $config = $dbConfig->config['db'];
+        $config = (new DbConfig())->config['db'];
 
         $this->entityManager =  EntityManager::create($config, Setup::createAttributeMetadataConfiguration([__DIR__ . '/../Entity']));
     }

@@ -4,6 +4,9 @@ namespace App\Core;
 
 class Response
 {
+    /**
+     * @var int
+     */
     public static int $status;
 
     public function __construct()

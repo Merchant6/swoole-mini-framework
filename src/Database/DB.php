@@ -8,25 +8,22 @@ use Exception;
 use Doctrine\DBAL\DriverManager;
 class DB
 {
+    /**
+     * @var DbConfig
+     */
     protected DbConfig $dbConfig;
+
+    /**
+     * @var 
+     */
     protected $connection;
     
     /**
-     * Configure the your database credentials here
+     * Getting and Setting the database configuration
      */
     public function __construct()
     {
-        $dbConfig = new DbConfig();
-        $config = $dbConfig->config['db'];
-
-        $connectionParams = [
-            'dbname' => $config['dbname'],
-            'user' => $config['user'],
-            'password' => $config['password'],
-            'host' => $config['host'],
-            'driver' => $config['driver'],
-            'poolSize' => 8,
-        ];
+        $connectionParams = (new DbConfig())->config['db'];
 
         $this->connection = DriverManager::getConnection($connectionParams);
     }
@@ -37,8 +34,9 @@ class DB
      */
     public static function builder(): QueryBuilder
     {
-        $db = new static();
-        return $db->connection->createQueryBuilder();
+        return (new static())
+        ->connection
+        ->createQueryBuilder();
     }
 
     /**

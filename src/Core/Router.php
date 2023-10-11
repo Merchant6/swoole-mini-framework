@@ -30,7 +30,7 @@ class Router
             $routeCollector->get('/get', [new ExampleController($this->request), 'get']);
         });
 
-        $this->response->header("Content-Type", "text/plain");
+        $this->response->header('Content-Type', 'application/json');
 
         $httpMethod = $this->request->server['request_method'];
         $uri = rawurldecode($this->request->server['request_uri']);

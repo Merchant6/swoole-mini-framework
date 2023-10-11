@@ -1,39 +1,30 @@
 <?php
 
 namespace App\Controllers;
-use App\Config\DbConfig;
 use App\Core\Response;
-use App\Database\DB;
 use App\Entity\Entity;
 use App\Entity\Swoole;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
-use Swoole\Http\Request;
 use App\Utils\Paginator;
 
 class ExampleController extends BaseController
 {
-    public function __construct(public Request $request)
+    public function __construct()
     {
         
     }
 
     public function index()
     {
-        $set = (new Swoole)
-        ->setFname('again')
-        ->setLname('inserting');
+        $text = "Hello from swoole-mini";
 
-        Entity::persistAndFlush($set);
-
-        return Response::json(['data' => $set->getId()], 200);
+        return Response::json([$text], 200);
     }
 
     public function get()
     {
         $query = Entity::builder()
         ->select('s')    
-        ->addSelect(['s.fname', 's.lname'])
+        ->addSelect(['s.id', 's.fname', 's.lname'])
         ->from(Swoole::class, 's'); 
 
         $paginator = (new Paginator())
@@ -43,6 +34,7 @@ class ExampleController extends BaseController
         foreach($paginator->getItems() as $p)
         {
             $result[] = [
+                'id'    => $p['id'],
                 'fname' => $p['fname'],
                 'lname' => $p['lname'],
             ];
