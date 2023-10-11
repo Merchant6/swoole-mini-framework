@@ -5,12 +5,15 @@ use App\Config\DbConfig;
 use DI\NotFoundException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Exception;
-use Doctrine\DBAL\{Driver, DriverManager};
+use Doctrine\DBAL\DriverManager;
 class DB
 {
     protected DbConfig $dbConfig;
     protected $connection;
     
+    /**
+     * Configure the your database credentials here
+     */
     public function __construct()
     {
         $dbConfig = new DbConfig();
@@ -22,18 +25,11 @@ class DB
             'password' => $config['password'],
             'host' => $config['host'],
             'driver' => $config['driver'],
-            // 'driverClass' => Driver\Swoole\Coroutine\Mysql\Driver::class,
             'poolSize' => 8,
         ];
 
         $this->connection = DriverManager::getConnection($connectionParams);
     }
-
-    // public function __call(string $name, array $args)
-    // {
-    //     return call_user_func_array([$this->connection, $name], $args);
-    // }
-
 
     /**
      * Return Instance of \Doctrine\DBAL\Query\QueryBuilder

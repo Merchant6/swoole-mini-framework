@@ -11,7 +11,7 @@ class Response
 
     }
 
-    public static function send(mixed $content = '', int $status = 200): mixed
+    public static function json(mixed $content = '', int $status = 200): mixed
     {   
         self::$status = $status;
         return json_encode($content, JSON_PRETTY_PRINT);

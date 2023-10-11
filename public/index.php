@@ -23,20 +23,28 @@ use App\Core\Application;
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
+//Setting up the App Url and App Port
 $appUrl = $_ENV['APP_URL'];
 $appPort = $_ENV['APP_PORT'];
 
+//Initializing the Server
 $server = new Server($appUrl, $appPort);
 
+//Display information on server start
 $server->on("start", function (Server $server) use($appUrl, $appPort) {
     echo "Swoole http server is started at $appUrl:$appPort\n";
 });
 
+//Can now handle requests
 $server->on("request", function (Request $request, Response $response) {
 
+    //Initializing the Application
     $app = new Application($request, $response);
+
+    //Getting the routes
     $app->router->router();
     
 });
 
+//Starting up the server
 $server->start();

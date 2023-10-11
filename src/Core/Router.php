@@ -26,7 +26,8 @@ class Router
         */
         $dispatcher = simpleDispatcher(function(RouteCollector $routeCollector){
 
-            $routeCollector->get('/', [new ExampleController, 'index']);
+            $routeCollector->get('/', [new ExampleController($this->request), 'index']);
+            $routeCollector->get('/get', [new ExampleController($this->request), 'get']);
         });
 
         $this->response->header("Content-Type", "text/plain");
@@ -53,7 +54,7 @@ class Router
                 $vars = $routeInfo[2];
 
                 $responseText = $handler($vars);
-                $this->response->status(\App\Core\Response::$status);
+                $this->response->status(\App\Core\Response::$status ?? 200);
                 $this->response->end($responseText);
                 break;
         }
