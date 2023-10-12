@@ -1,23 +1,30 @@
 <?php
 
 namespace App\Controllers;
-use App\Core\Response;
 use App\Entity\Entity;
 use App\Entity\Swoole;
 use App\Utils\Paginator;
+use Swoole\Http\Request;
+use App\Core\Response;
 
 class ExampleController extends BaseController
 {
-    public function __construct()
+    public function __construct(private Request $request)
     {
         
     }
 
     public function index()
     {
-        $text = "Hello from swoole-mini";
+        $setter = (new Swoole())
+        ->setProperties([
+            'fname' => 'using',
+            'lname' => 'setProperties'
+        ]);
 
-        return Response::json([$text], 200);
+        return Response::json([
+            'data' => $setter,
+        ], 200);
     }
 
     public function get()
@@ -25,10 +32,10 @@ class ExampleController extends BaseController
         $query = Entity::builder()
         ->select('s')    
         ->addSelect(['s.id', 's.fname', 's.lname'])
-        ->from(Swoole::class, 's'); 
+        ->from(Swoole::class, 's');
 
         $paginator = (new Paginator())
-        ->paginate($query, $this->request->get['page'] ?? 1);
+        ->paginate($query, $this->request->get['page'] ?? 1, 20);
 
         $result = [];
         foreach($paginator->getItems() as $p)
@@ -39,6 +46,6 @@ class ExampleController extends BaseController
                 'lname' => $p['lname'],
             ];
         }
-        return Response::json(['data' => $result], 200);
+        return Response::json(['data' => $query], 200);
     }
 }

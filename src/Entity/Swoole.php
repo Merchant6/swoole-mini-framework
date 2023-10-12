@@ -70,8 +70,9 @@ class Swoole
 			if(method_exists($this, $setterMethod))
 			{
 				$this->$setterMethod($value);
+				return true;
 			}
-
-		}
+			return false;
+		}	
 	}
 }

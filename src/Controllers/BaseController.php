@@ -7,7 +7,7 @@ use Swoole\Http\Response;
 
 class BaseController
 {
-    public function __construct(protected Request $request, protected Response $response)
+    public function __construct()
     {
 
     }

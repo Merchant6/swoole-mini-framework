@@ -41,8 +41,8 @@ $server->on("request", function (Request $request, Response $response) {
     //Initializing the Application
     $app = new Application($request, $response);
 
-    //Getting the routes
-    $app->router->router();
+    //Run the application
+    $app->run();
     
 });
 

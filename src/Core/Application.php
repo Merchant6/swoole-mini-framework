@@ -21,9 +21,10 @@ class Application
     {
         //Initailizing the Router class
         $this->router = new Router($request, $response);
-
-        //Initializing the BaseController and injecting the Request and Response object
-        $this->baseController = new BaseController($request, $response);
     }
 
+    public function run(): void
+    {
+        $this->router->router();
+    }
 }
