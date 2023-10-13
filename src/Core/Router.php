@@ -2,6 +2,7 @@
 
 namespace App\Core;
 use App\Controllers\ExampleController;
+use App\Routes\Routes;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Swoole\Http\Request;
@@ -26,8 +27,12 @@ class Router
         */
         $dispatcher = simpleDispatcher(function(RouteCollector $routeCollector){
 
-            $routeCollector->get('/', [new ExampleController($this->request), 'index']);
-            $routeCollector->get('/get', [new ExampleController($this->request), 'get']);
+            $routes = new Routes($this->request, $routeCollector);
+            foreach($routes->routes() as $route)
+            {
+                return $route;
+            }
+            
         });
 
         $this->response->header('Content-Type', 'application/json');

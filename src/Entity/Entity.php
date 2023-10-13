@@ -39,7 +39,7 @@ class Entity
         return (new static)->entityManager->createQueryBuilder();
     }
 
-    public static function persistAndFlush(object $entity)
+    public static function persistAndFlush(object $entity): void
     {
         $entityManager = (new static)->entityManager;
         $entityManager->persist($entity);

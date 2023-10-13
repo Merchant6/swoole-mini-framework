@@ -16,14 +16,16 @@ class ExampleController extends BaseController
 
     public function index()
     {
-        $setter = (new Swoole())
-        ->setProperties([
-            'fname' => 'using',
-            'lname' => 'setProperties'
-        ]);
+        // $setter = (new Swoole())
+        // ->setProperties([
+        //     'fname' => 'using',
+        //     'lname' => 'setProperties'
+        // ]);
+
+        $msg = 'Hello from routes';
 
         return Response::json([
-            'data' => $setter,
+            'data' => $msg,
         ], 200);
     }
 
@@ -46,6 +48,6 @@ class ExampleController extends BaseController
                 'lname' => $p['lname'],
             ];
         }
-        return Response::json(['data' => $query], 200);
+        return Response::json(['data' => $result], 200);
     }
 }
