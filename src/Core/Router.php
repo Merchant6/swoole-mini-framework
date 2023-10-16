@@ -28,30 +28,29 @@ class Router
         $dispatcher = simpleDispatcher(function(RouteCollector $routeCollector){
 
             $routes = new Routes($this->request, $routeCollector);
-            foreach($routes->routes() as $route)
+            foreach($routes->define() as $route)
             {
                 return $route;
             }
             
         });
 
-        $this->response->header('Content-Type', 'application/json');
-
         $httpMethod = $this->request->server['request_method'];
         $uri = rawurldecode($this->request->server['request_uri']);
 
         $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
-
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 // ... 404 Not Found
                 $this->response->status(404);
+                // $this->response->header('Content-Type', 'application/json');
                 $this->response->end('Not Found');
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];
                 // ... 405 Method Not Allowed
                 $this->response->status(405);
+                // $this->response->header('Content-Type', 'application/json');
                 $this->response->end('Method not allowed');
                 break;
             case Dispatcher::FOUND:
@@ -59,8 +58,12 @@ class Router
                 $vars = $routeInfo[2];
 
                 $responseText = $handler($vars);
-                $this->response->status(\App\Core\Response::$status ?? 200);
-                $this->response->end($responseText);
+                if(!$responseText || $responseText == null)
+                {
+                    $this->response->status(\App\Core\Response::$status ?? 200);
+                    $this->response->header('Content-Type', 'application/json');
+                    $this->response->end($responseText);
+                }
                 break;
         }
     }
