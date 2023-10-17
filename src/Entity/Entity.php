@@ -15,10 +15,9 @@ class Entity
 
     public function __construct()
     {
-        $config = (new DbConfig())->config['db'];
-        // $config = require(__DIR__ . '/../Config/DbConfig.php');
+        $config = require(__DIR__ . '/../Config/database.php');
 
-        $this->entityManager =  EntityManager::create($config, Setup::createAttributeMetadataConfiguration([__DIR__ . '/../Entity']));
+        $this->entityManager =  EntityManager::create($config['db'], Setup::createAttributeMetadataConfiguration([__DIR__ . '/../Entity']));
     }
 
 

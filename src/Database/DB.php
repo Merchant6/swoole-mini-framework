@@ -23,9 +23,9 @@ class DB
      */
     public function __construct()
     {
-        $connectionParams = (new DbConfig())->config['db'];
+        $config = require(__DIR__ . '/../Config/database.php');
 
-        $this->connection = DriverManager::getConnection($connectionParams);
+        $this->connection = DriverManager::getConnection($config['db']);
     }
 
     /**

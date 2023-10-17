@@ -16,12 +16,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
-use Dotenv\Dotenv;
 use App\Core\Application;
 
 //Loading the Dotenv
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+require_once __DIR__ . "/../src/Config/dotenv.php";
 
 //Setting up the App Url and App Port
 $appUrl = $_ENV['APP_URL'];
