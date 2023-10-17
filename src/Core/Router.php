@@ -28,11 +28,7 @@ class Router
         $dispatcher = simpleDispatcher(function(RouteCollector $routeCollector){
 
             $routes = new Routes($this->request, $routeCollector);
-            foreach($routes->define() as $route)
-            {
-                return $route;
-            }
-            
+            return $routes->define();
         });
 
         $httpMethod = $this->request->server['request_method'];
@@ -58,12 +54,12 @@ class Router
                 $vars = $routeInfo[2];
 
                 $responseText = $handler($vars);
-                if(!$responseText || $responseText == null)
-                {
+                if ($responseText !== null) 
+                {   
                     $this->response->status(\App\Core\Response::$status ?? 200);
-                    $this->response->header('Content-Type', 'application/json');
                     $this->response->end($responseText);
-                }
+                } 
+
                 break;
         }
     }

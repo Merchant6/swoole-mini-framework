@@ -30,6 +30,10 @@ $appPort = $_ENV['APP_PORT'];
 //Initializing the Server
 $server = new Server($appUrl, $appPort);
 
+$server->set([
+    'enable_coroutine' => true,
+]);
+
 //Display information on server start
 $server->on("start", function (Server $server) use($appUrl, $appPort) {
     echo "Swoole http server is started at $appUrl:$appPort\n";

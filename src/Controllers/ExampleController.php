@@ -6,6 +6,8 @@ use App\Entity\Swoole;
 use App\Utils\Paginator;
 use Swoole\Http\Request;
 use App\Core\Response;
+use Swoole\Coroutine as co;
+use Swoole\Coroutine\Channel;
 
 class ExampleController extends BaseController
 {
@@ -16,12 +18,6 @@ class ExampleController extends BaseController
 
     public function index()
     {
-        // $setter = (new Swoole())
-        // ->setProperties([
-        //     'fname' => 'using',
-        //     'lname' => 'setProperties'
-        // ]);
-
         $msg = 'Hello from routes';
 
         return Response::json([
@@ -30,24 +26,30 @@ class ExampleController extends BaseController
     }
 
     public function get()
-    {
-        $query = Entity::builder()
-        ->select('s')    
-        ->addSelect(['s.id', 's.fname', 's.lname'])
-        ->from(Swoole::class, 's');
+    {   
+        $channel = new Channel();
+        co::create(function() use($channel){
+            $query = Entity::builder()
+            ->select('s')    
+            ->addSelect(['s.id', 's.fname', 's.lname'])
+            ->from(Swoole::class, 's');
 
-        $paginator = (new Paginator())
-        ->paginate($query, $this->request->get['page'] ?? 1, 20);
+            $paginator = (new Paginator())
+            ->paginate($query, $this->request->get['page'] ?? 1, 20);
 
-        $result = [];
-        foreach($paginator->getItems() as $p)
-        {
-            $result[] = [
-                'id'    => $p['id'],
-                'fname' => $p['fname'],
-                'lname' => $p['lname'],
-            ];
-        }
+            $result = [];
+            foreach($paginator->getItems() as $p)
+            {
+                $result[] = [
+                    'id'    => $p['id'],
+                    'fname' => $p['fname'],
+                    'lname' => $p['lname'],
+                ];
+            }
+            $channel->push($result);
+        });
+
+        $result = $channel->pop();
         return Response::json(['data' => $result], 200);
     }
 }

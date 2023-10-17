@@ -9,7 +9,7 @@ use Swoole\Http\Response;
 
 abstract class Middleware implements MiddlewareInterface
 {
-    public function handle(Request $request, Response $response, Closure $next)
+    public function handle(Request $request, Response $response, Closure $next): Response
     {
         //Todo
     }
