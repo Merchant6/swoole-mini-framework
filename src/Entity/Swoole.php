@@ -22,6 +22,9 @@ class Swoole
     #[Column]
     private string $lname;
 
+	#[Column(name: 'created_at', type: 'datetime')]
+    private \DateTime $createdAt;
+
 	/**
 	 * @return int
 	 */
@@ -74,5 +77,13 @@ class Swoole
 			}
 			return false;
 		}	
+	}
+
+	/**
+	 * @param \DateTime $createdAt 
+	 * @return self
+	 */
+	public function setCreatedAt(\DateTime $createdAt): void {
+		$this->createdAt = new \DateTime("now");
 	}
 }

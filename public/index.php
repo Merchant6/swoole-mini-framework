@@ -3,23 +3,16 @@
 
 /*
 |--------------------------------------------------------------------------
-| Register The Auto Loader
+| Bootstrapping the app
 |--------------------------------------------------------------------------
 |
-| Composer provides a convenient, automatically generated class loader for
-| this application. We just need to utilize it! We'll simply require it
-| into the script here so we don't need to manually load our classes.
-|
 */
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use App\Core\Application;
-
-//Loading the Dotenv
-require_once __DIR__ . "/../src/Config/dotenv.php";
 
 //Setting up the App Url and App Port
 $appUrl = $_ENV['APP_URL'];

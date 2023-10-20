@@ -9,9 +9,8 @@
         "nikic/fast-route": "^1.3",
         "vlucas/phpdotenv": "^5.5",
         "doctrine/dbal": "^3.7",
-        "php-di/php-di": "^7.0",
-        "mix/database": "^3.0",
         "doctrine/orm": "^2.16",
-        "symfony/cache": "^6.3"
+        "symfony/cache": "^6.3",
+        "doctrine/migrations": "^3.6"
     }
 }
