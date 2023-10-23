@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Entity;
-use App\Config\DbConfig;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Setup;

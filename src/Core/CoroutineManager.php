@@ -6,16 +6,8 @@ use Swoole\Coroutine\Channel;
 
 class CoroutineManager
 {
-    protected Co $coroutine;
-
-    public function __construct()
-    {
-        $this->coroutine = new Co();
-    }
-
-
     /**
-     * Creare a Coroutine with a channel capacity
+     * Creare a Coroutine
      * @param int $capacity
      * @param callable $callable
      * @return array
@@ -32,11 +24,19 @@ class CoroutineManager
         return $channel->pop();
     }
 
+    /**
+     * Return stats of current Coroutine context
+     * @return mixed
+     */
     public static function stats()
     {
         return Co::stats();
     }
 
+    /**
+     * Get the id of the current Coroutine
+     * @return mixed
+     */
     public static function getId()
     {
         return Co::getCid();
