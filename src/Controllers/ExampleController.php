@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+use App\Core\CoroutineManager;
 use App\Entity\Entity;
 use App\Entity\Swoole;
 use App\Utils\Paginator;
@@ -27,8 +28,7 @@ class ExampleController extends BaseController
 
     public function get()
     {   
-        $channel = new Channel();
-        co::create(function() use($channel){
+        $result = CoroutineManager::run(1, function () {
             $query = Entity::builder()
             ->select('s')    
             ->addSelect(['s.id', 's.fname', 's.lname'])
@@ -46,10 +46,10 @@ class ExampleController extends BaseController
                     'lname' => $p['lname'],
                 ];
             }
-            $channel->push($result);
+
+            return $result;
         });
 
-        $result = $channel->pop();
         return Response::json(['data' => $result], 200);
     }
 }
