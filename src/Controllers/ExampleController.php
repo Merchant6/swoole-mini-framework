@@ -7,8 +7,6 @@ use App\Entity\Swoole;
 use App\Utils\Paginator;
 use Swoole\Http\Request;
 use App\Core\Response;
-use Swoole\Coroutine as co;
-use Swoole\Coroutine\Channel;
 
 class ExampleController extends BaseController
 {
