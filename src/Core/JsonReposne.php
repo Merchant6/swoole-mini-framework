@@ -2,7 +2,7 @@
 
 namespace App\Core;
 
-class Response
+class JsonResponse
 {
     /**
      * @var int

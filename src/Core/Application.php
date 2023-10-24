@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Core;
-use App\Controllers\BaseController;
-use Closure;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 

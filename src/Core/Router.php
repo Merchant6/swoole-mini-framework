@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Core;
-use App\Controllers\ExampleController;
 use App\Routes\Routes;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
+use App\Core\JsonResponse;
 
 use function FastRoute\simpleDispatcher;
 
@@ -56,7 +56,7 @@ class Router
                 $responseText = $handler($vars);
                 if ($responseText !== null) 
                 {   
-                    $this->response->status(\App\Core\Response::$status ?? 200);
+                    $this->response->status(JsonResponse::$status ?? 200);
                     $this->response->end($responseText);
                 } 
 

@@ -6,7 +6,7 @@ use App\Entity\Entity;
 use App\Entity\Swoole;
 use App\Utils\Paginator;
 use Swoole\Http\Request;
-use App\Core\Response;
+use App\Core\JsonResponse;
 
 class ExampleController extends BaseController
 {
@@ -19,7 +19,7 @@ class ExampleController extends BaseController
     {
         $msg = 'Hello from routes';
 
-        return Response::json([
+        return JsonResponse::json([
             'data' => $msg,
         ], 200);
     }
@@ -48,6 +48,6 @@ class ExampleController extends BaseController
             return $result;
         });
 
-        return Response::json(['data' => $result], 200);
+        return JsonResponse::json(['data' => $result], 200);
     }
 }
