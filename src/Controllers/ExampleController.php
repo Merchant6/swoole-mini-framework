@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 use App\Core\CoroutineManager;
+use App\Core\Validator;
 use App\Entity\Entity;
 use App\Entity\Swoole;
 use App\Utils\Paginator;
@@ -49,5 +50,26 @@ class ExampleController extends BaseController
         });
 
         return JsonResponse::json(['data' => $result], 200);
+    }
+
+    public function form()
+    {
+        $email = $this->request->post['email'];
+
+        $validator = (new Validator([
+            'email' => $email
+        ]))
+        ->email('email');
+
+        if($validator->isValid())
+        {
+            return JsonResponse::json([
+                'data' => $email,
+            ], 200);
+        }
+
+        return JsonResponse::json([
+            'message' => $validator->getErrors(),
+        ], 400);
     }
 }

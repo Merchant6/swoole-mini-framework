@@ -21,8 +21,8 @@ class Routes
         return [
 
             $this->route->get('/', [new ExampleController($this->request), 'index']),
-            $this->route->get('/get', [new ExampleController($this->request), 'get'])
-
+            $this->route->get('/get', [new ExampleController($this->request), 'get']),
+            $this->route->post('/form', [new ExampleController($this->request),'form']),
         ];
     }
 }
