@@ -26,16 +26,16 @@ class Application
     public function handle(Request $request, Response $response)
     {
         //Applying the middleware
-        $this->applyMiddlewares($request, $response);
+        $this->applyRequestMiddlewares($request, $response);
         
         //Initializing the router
         $this->router = new Router($request, $response);
     }
 
-    private function applyMiddlewares($request, $response): void
+    private function applyRequestMiddlewares($request, $response): void
     {
         (new MiddlewareDispatcher($request, $response))
-        ->dispatch();
+        ->dispatchRequestMiddleware();
     }
 
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Core;
+use App\Controllers\ExampleController;
 use App\Routes\Routes;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
@@ -27,14 +28,22 @@ class Router
         */
         $dispatcher = simpleDispatcher(function(RouteCollector $routeCollector){
 
-            $routes = new Routes($this->request, $routeCollector);
-            return $routes->define();
+            $routes = include __DIR__ . '/../Routes/Routes.php';
+            
+            //Applying Route Middlewares
+            // (new MiddlewareDispatcher($this->request, $this->response))->routeMiddlewares($routes);
+
+            foreach ($routes as $route) 
+            {
+                $routeCollector->addRoute($route[0], $route[1], [new $route[2][0]($this->request), $route[2][1]]);
+            }
         });
 
         $httpMethod = $this->request->server['request_method'];
         $uri = rawurldecode($this->request->server['request_uri']);
 
         $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 // ... 404 Not Found
@@ -53,12 +62,12 @@ class Router
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
 
-                $responseText = $handler($vars);
-                if ($responseText !== null) 
+                $responseContent = $handler($vars);
+                if ($responseContent !== null) 
                 {   
                     $this->response->status(JsonResponse::$status ?? 200);
-                    $this->response->end($responseText);
-                } 
+                    $this->response->end($responseContent);
+                }
 
                 break;
         }

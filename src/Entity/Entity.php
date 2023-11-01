@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Setup;
@@ -16,7 +17,15 @@ class Entity
     {
         $config = require(__DIR__ . '/../Config/database.php');
 
-        $this->entityManager =  EntityManager::create($config['db'], Setup::createAttributeMetadataConfiguration([__DIR__ . '/../Entity']));
+        $pool = new \Swoole\ConnectionPool(
+            function() use($config){
+                return DriverManager::getConnection($config['db']);
+            }, 100000
+        );
+
+        var_dump($pool->get());
+
+        $this->entityManager =  EntityManager::create($pool->get(), Setup::createAttributeMetadataConfiguration([__DIR__ . '/../Entity']));
     }
 
 

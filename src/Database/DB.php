@@ -6,6 +6,7 @@ use DI\NotFoundException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Exception;
 use Doctrine\DBAL\DriverManager;
+use Swoole\ConnectonPool;
 class DB
 {
     /**
@@ -24,7 +25,7 @@ class DB
     public function __construct()
     {
         $config = require(__DIR__ . '/../Config/database.php');
-
+        
         $this->connection = DriverManager::getConnection($config['db']);
     }
 

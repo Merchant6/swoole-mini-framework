@@ -13,7 +13,7 @@ class CoroutineManager
      * @return array
      */
     public static function run(int $capacity = 1, callable $callable): array
-    {
+    {   
         $channel = new Channel($capacity);
         Co::create(function () use ($callable, $channel) 
         {

@@ -1,11 +1,18 @@
 <?php
 
 use App\Middlewares\AuthMiddleware;
+use App\Middlewares\Hello;
 use App\Middlewares\JsonResponse;
 
 return [
 
-    JsonResponse::class,
-    AuthMiddleware::class,
+    'middleware' => [
+        JsonResponse::class,
+        AuthMiddleware::class,
+    ],
+
+    'middlewareAliases' => [
+        'print' => Hello::class,
+    ],
     
 ];
