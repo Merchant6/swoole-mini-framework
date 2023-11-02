@@ -4,7 +4,6 @@ namespace App\Middlewares;
 use Closure;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
-use App\Core\Response as Responser;
 
 class AuthMiddleware extends Middleware
 {

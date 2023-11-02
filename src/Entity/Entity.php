@@ -23,8 +23,6 @@ class Entity
             }, 100000
         );
 
-        var_dump($pool->get());
-
         $this->entityManager =  EntityManager::create($pool->get(), Setup::createAttributeMetadataConfiguration([__DIR__ . '/../Entity']));
     }
 

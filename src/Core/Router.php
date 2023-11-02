@@ -31,10 +31,10 @@ class Router
             $routes = include __DIR__ . '/../Routes/Routes.php';
             
             //Applying Route Middlewares
-            // (new MiddlewareDispatcher($this->request, $this->response))->routeMiddlewares($routes);
+            $middlewareClosures =  (new MiddlewareDispatcher($this->request, $this->response))->routeMiddlewares($routes);
 
-            foreach ($routes as $route) 
-            {
+            foreach ($routes as $route) {
+                // Add the route handler with applied middlewares
                 $routeCollector->addRoute($route[0], $route[1], [new $route[2][0]($this->request), $route[2][1]]);
             }
         });

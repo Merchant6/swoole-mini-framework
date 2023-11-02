@@ -44,8 +44,66 @@ class MiddlewareDispatcher
 
     }
 
-    public function routeMiddlewares(array $routes): void
+    public function routeMiddlewares(array $routes)
     {   
-        // var_dump($routes);
+        $config = $this->configFile['middlewareAliases'];
+
+        foreach($routes as $route)
+        {   
+            $path  = $route[1];
+            $controller = $route[2][0];
+            $method = $route[2][1];
+
+            $middlewareArray = $route[3] ?? null;
+
+            if(!isset($middlewareArray))
+            {
+                continue;
+            }
+
+            if(isset($middlewareArray) && is_array($middlewareArray))
+            {   
+                foreach($middlewareArray as $middlewareAlias)
+                {
+                    if(array_key_exists($middlewareAlias, $config))
+                    {
+                        $middlewareClass = $config[$middlewareAlias];
+                        $currentMiddleware = new $middlewareClass;
+                        
+                        if($this->matchesRoute($path))
+                        {
+                            $response = $currentMiddleware->handle($this->request, $this->response, function ($request, $response) use ($controller, $method) {
+                            
+                                $controller = new $controller($this->request);
+    
+                                $reflectMethod  = new \ReflectionMethod($controller, $method);
+                                $methodParams = $reflectMethod->getParameters();
+                                if(!$methodParams || !$methodParams = null)
+                                {
+                                    call_user_func_array([$controller, $method], $methodParams);
+                                }
+    
+                                $controller->$method();
+    
+                                return $response;
+                            });
+        
+                            $this->response = $response;
+                        }
+                    }
+                };
+            }
+        }
+    }
+
+    public function matchesRoute($routeUri): bool
+    {
+        $currentUri = $this->request->server['request_uri'];
+        if($currentUri == $routeUri)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
