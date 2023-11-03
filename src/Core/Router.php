@@ -62,9 +62,10 @@ class Router
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
 
+
                 $responseContent = $handler($vars);
-                if ($responseContent !== null) 
-                {   
+                if($this->response->isWritable()) 
+                {
                     $this->response->status(JsonResponse::$status ?? 200);
                     $this->response->end($responseContent);
                 }

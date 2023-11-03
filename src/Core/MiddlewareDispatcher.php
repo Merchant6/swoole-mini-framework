@@ -18,7 +18,7 @@ class MiddlewareDispatcher
     }
 
     /**
-     * Dispatch middlewares defined in the middlewareConfig.php 
+     * Dispatches the global middleware stack defined in middlewareConfig.php
      * @return Response
      */
     public function dispatchRequestMiddleware(): Response
@@ -44,7 +44,15 @@ class MiddlewareDispatcher
 
     }
 
-    public function routeMiddlewares(array $routes)
+    /**
+     * Takes an array of routes from the Routes.php file and 
+     * apply route middlewares if the current request URI
+     * matches the current route URI
+     *  
+     * @param array $routes
+     * @return void
+     */
+    public function routeMiddlewares(array $routes): void
     {   
         $config = $this->configFile['middlewareAliases'];
 
@@ -55,11 +63,6 @@ class MiddlewareDispatcher
             $method = $route[2][1];
 
             $middlewareArray = $route[3] ?? null;
-
-            if(!isset($middlewareArray))
-            {
-                continue;
-            }
 
             if(isset($middlewareArray) && is_array($middlewareArray))
             {   
@@ -72,8 +75,8 @@ class MiddlewareDispatcher
                         
                         if($this->matchesRoute($path))
                         {
-                            $response = $currentMiddleware->handle($this->request, $this->response, function ($request, $response) use ($controller, $method) {
-                            
+                            $response = $currentMiddleware->handle($this->request, $this->response, function ($request, $response) use ($controller, $method) 
+                            {
                                 $controller = new $controller($this->request);
     
                                 $reflectMethod  = new \ReflectionMethod($controller, $method);
@@ -91,11 +94,20 @@ class MiddlewareDispatcher
                             $this->response = $response;
                         }
                     }
-                };
+                }
+            }
+            else
+            {
+                continue;
             }
         }
     }
 
+    /**
+     * Matches the current route URI with the current request URI
+     * @param mixed $routeUri
+     * @return bool
+     */
     public function matchesRoute($routeUri): bool
     {
         $currentUri = $this->request->server['request_uri'];
