@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Core;
-use App\Controllers\ExampleController;
-use App\Routes\Routes;
+use DI\Container;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Swoole\Http\Request;
@@ -14,7 +13,7 @@ use function FastRoute\simpleDispatcher;
 class Router
 {
 
-    public function __construct(public Request $request, public Response $response)
+    public function __construct(protected Request $request, protected Response $response, protected Container $container)
     {
 
     }
@@ -31,7 +30,7 @@ class Router
             $routes = include __DIR__ . '/../Routes/Routes.php';
             
             //Applying Route Middlewares
-            $middlewareClosures =  (new MiddlewareDispatcher($this->request, $this->response))->routeMiddlewares($routes);
+            (new MiddlewareDispatcher($this->request, $this->response))->routeMiddlewares($routes);
 
             foreach ($routes as $route) {
                 // Add the route handler with applied middlewares
@@ -48,22 +47,22 @@ class Router
             case Dispatcher::NOT_FOUND:
                 // ... 404 Not Found
                 $this->response->status(404);
-                // $this->response->header('Content-Type', 'application/json');
                 $this->response->end('Not Found');
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];
                 // ... 405 Method Not Allowed
                 $this->response->status(405);
-                // $this->response->header('Content-Type', 'application/json');
                 $this->response->end('Method not allowed');
                 break;
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
 
+                $reflector = new MethodInvoker(new $handler[0]($this->request), $handler[1], $vars, $this->container);
+                $invoke = $reflector->invoke();
 
-                $responseContent = $handler($vars);
+                $responseContent = $invoke;
                 if($this->response->isWritable()) 
                 {
                     $this->response->status(JsonResponse::$status ?? 200);

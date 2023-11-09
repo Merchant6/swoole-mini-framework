@@ -81,13 +81,13 @@ class MiddlewareDispatcher
     
                                 $reflectMethod  = new \ReflectionMethod($controller, $method);
                                 $methodParams = $reflectMethod->getParameters();
-                                if(!$methodParams || !$methodParams = null)
+                                if($methodParams)
                                 {
-                                    call_user_func_array([$controller, $method], $methodParams);
+                                    $reflectMethod->invokeArgs($controller, $methodParams);
+                                    return $response;
                                 }
-    
+                                
                                 $controller->$method();
-    
                                 return $response;
                             });
         

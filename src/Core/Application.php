@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Core;
+use DI\Container;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 
@@ -23,13 +24,15 @@ class Application
      * @param \Swoole\Http\Response $response
      * @return void
      */
-    public function handle(Request $request, Response $response)
+    public function handle(Request $request, Response $response, Container $container)
     {
         //Applying the middleware
         $this->applyRequestMiddlewares($request, $response);
+
+        //Need to initialize the DI container for method injection
         
         //Initializing the router
-        $this->router = new Router($request, $response);
+        $this->router = new Router($request, $response, $container);
     }
 
     private function applyRequestMiddlewares($request, $response): void

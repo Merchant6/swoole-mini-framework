@@ -3,6 +3,7 @@
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
+use DI\ContainerBuilder;
 
 $app = require_once __DIR__ . '/app.php';
 
@@ -25,8 +26,15 @@ $server->on("start", function (Server $server) use($appUrl, $appPort) {
 //Can now handle requests
 $server->on("request", function (Request $request, Response $response) use($app) {
 
+    //Initializing the container
+    $containerBuilder = new ContainerBuilder();
+    $containerBuilder->addDefinitions(__DIR__ . '/../src/Config/definitions.php');
+
+    $containerBuilder->useAutowiring(true);
+    $container = $containerBuilder->build();
+
     //Handling the request
-    $app->handle($request, $response);
+    $app->handle($request, $response, $container);
 
     //Run the application
     $app->run();

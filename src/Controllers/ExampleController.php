@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 use App\Core\CoroutineManager;
-use App\Core\Validator;
+use App\Utils\Validator;
 use App\Entity\Entity;
 use App\Entity\Swoole;
 use App\Utils\Paginator;
@@ -16,19 +16,19 @@ class ExampleController extends BaseController
         
     }
 
-    public function index()
+    public function index(string $name, Entity $entity, Swoole $swoole)
     {
         $msg = 'Hello from routes';
 
         return JsonResponse::json([
-            'data' => $msg,
+            'data' => $name,
         ], 200);
     }
 
-    public function get()
+    public function get(Entity $entity)
     {   
-        $result = CoroutineManager::run(1, function () {
-            $query = Entity::builder()
+        $result = CoroutineManager::run(1, function () use($entity){
+            $query = $entity->builder()
             ->select('s')    
             ->addSelect(['s.id', 's.fname', 's.lname'])
             ->from(Swoole::class, 's');
