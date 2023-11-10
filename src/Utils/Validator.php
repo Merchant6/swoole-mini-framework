@@ -16,35 +16,47 @@ class Validator
      * @var array
      */
     private array $data = [];
+
+    private \ReflectionMethod $reflectionMethod;
     
     public function __construct()
     {
-
+        
     }
 
-    public function requestMake(Request $request, array $data)
+    public function make(Request $request, array $data)
     {
-        $postArray = [];
-        foreach($request->post as $postKey => $postValue)
+        foreach($data as $dataKey => $dataValue)
         {
-            $postArray[$postKey] = $postValue;
-
-            foreach($data as $dataKey => $dataValue)
+            if(array_key_exists($dataKey, $request->post))
             {
-                if(array_key_exists($dataKey, $postArray))
-                {
-                    var_dump(explode($dataValue));
+                $rules = explode('|', $dataValue);
+                foreach($rules as $method)
+                {  
+                    if(str_contains($method,':'))
+                    {
+                        $method = explode(':', $method);
+                        if($method[0] == 'length')
+                        {
+                            return (new \ReflectionMethod($this, $method[0]))
+                            ->invokeArgs($this, [$request->post[$dataKey], $method[1], $method[2]]);
+                        }
+
+                        if($method[0] == 'regex')
+                        {
+                            return (new \ReflectionMethod($this, $method[0]))
+                            ->invokeArgs($this, [$request->post[$dataKey], $method[1]]);
+                        }
+                    }
+
+                    if(method_exists($this, $method))
+                    {   
+                        call_user_func([$this, $method], $request->post[$dataKey]);
+                    };   
                 }
             }
+
         }
-
-        // var_dump($postArray);
-    }
-
-    public function make(array $data): self
-    {
-        $this->data = $data;
-        return $this;
     }
 
     public function isValid()
@@ -58,9 +70,9 @@ class Validator
      * @param string $message
      * @return \App\Core\Validator
      */
-    public function required(mixed $field, string $message = "This field is required."): self
+    public function required(mixed $value, string $message = "This field is required."): self
     {
-        if(!isset($this->data[$field]) || empty($this->data[$field]))
+        if(!isset($value) || empty($value))
         {
             $this->errors[] = $message;
         }
@@ -74,9 +86,9 @@ class Validator
      * @param string $message
      * @return \App\Core\Validator
      */
-    public function string(mixed $field, string $message = "The field is not a string"): self
+    public function string(mixed $value, string $message = "The field is not a string"): self
     {
-        $value = trim($this->data[$field] ?? ''); 
+        $value = trim($value ?? ''); 
         if(!is_string($value) || empty($value))
         {
             $this->errors[] = $message;
@@ -91,9 +103,9 @@ class Validator
      * @param mixed $message
      * @return \App\Core\Validator
      */
-    public function email(mixed $field, $message = "This field is not an email."): self
+    public function email(mixed $value, $message = "This field is not an email."): self
     {
-        if(!preg_match("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$^", $this->data[$field]))
+        if(!preg_match("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$^", $value))
         {
             $this->errors[] = $message;
         }
@@ -109,9 +121,9 @@ class Validator
      * @param string $message
      * @return \App\Core\Validator
      */
-    public function length(mixed $field, int $min, int $max, string $message = "Length is invalid"): self
+    public function length(mixed $value, int $min, int $max, string $message = "Length is invalid"): self
     {
-        $length = strlen($this->data[$field]);
+        $length = strlen($value);
 
         if($min > $max)
         {
@@ -139,9 +151,9 @@ class Validator
      * @param string $message
      * @return \App\Core\Validator
      */
-    public function alpha(mixed $field, string $message = "Invalid name"): self
+    public function alpha(mixed $value, string $message = "Invalid name"): self
     {
-        if(!preg_match("^[a-zA-Z ]+$^", $this->data[$field]))
+        if(!preg_match("^[a-zA-Z ]+$^", $value))
         {
             $this->errors[] = $message;
         }
@@ -149,9 +161,9 @@ class Validator
         return $this;
     }
 
-    public function regex(mixed $field, string $pattern, string $message = 'Invalid field')
+    public function regex(mixed $value, string $pattern, string $message = 'Invalid field')
     {
-        if(!preg_match($pattern, $this->data[$field]))
+        if(!preg_match($pattern, $value))
         {
             $this->errors[] = $message; 
         }

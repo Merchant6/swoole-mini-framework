@@ -53,18 +53,14 @@ class ExampleController extends BaseController
 
     public function form(Validator $validator)
     {
-        $email = $this->request->post['email'];
-
-        $validData = $validator->make(['email' => $email])->email('email');
-
-        $validData->requestMake($this->request, [
-            'email'=> $email,
+        $validator->make($this->request, [
+            'number'=> 'regex:/^\\d+$/',
         ]);
 
-        if($validData->isValid())
+        if($validator->isValid())
         {
             return JsonResponse::json([
-                'data' => $email,
+                'data' => 'Number Validated',
             ], 200);
         }
 
