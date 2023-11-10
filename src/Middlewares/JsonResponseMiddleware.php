@@ -6,7 +6,7 @@ use Closure;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 
-class JsonResponse extends Middleware
+class JsonResponseMiddleware extends Middleware
 { 
     public function handle(Request $request, Response $response, Closure $next): Response
     {

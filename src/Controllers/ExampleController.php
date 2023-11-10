@@ -2,13 +2,12 @@
 
 namespace App\Controllers;
 use App\Core\CoroutineManager;
+use App\Core\JsonResponse;
 use App\Utils\Validator;
 use App\Entity\Entity;
 use App\Entity\Swoole;
 use App\Utils\Paginator;
 use Swoole\Http\Request;
-use App\Core\JsonResponse;
-
 class ExampleController extends BaseController
 {
     public function __construct(private Request $request)
@@ -16,12 +15,12 @@ class ExampleController extends BaseController
         
     }
 
-    public function index(string $name, Entity $entity, Swoole $swoole)
+    public function index(string $name, JsonResponse $jsonResponse)
     {
-        $msg = 'Hello from routes';
+        $msg = "Hello from $name";
 
         return JsonResponse::json([
-            'data' => $name,
+            'data' => $msg,
         ], 200);
     }
 
@@ -52,16 +51,17 @@ class ExampleController extends BaseController
         return JsonResponse::json(['data' => $result], 200);
     }
 
-    public function form()
+    public function form(Validator $validator)
     {
         $email = $this->request->post['email'];
 
-        $validator = (new Validator([
-            'email' => $email
-        ]))
-        ->email('email');
+        $validData = $validator->make(['email' => $email])->email('email');
 
-        if($validator->isValid())
+        $validData->requestMake($this->request, [
+            'email'=> $email,
+        ]);
+
+        if($validData->isValid())
         {
             return JsonResponse::json([
                 'data' => $email,

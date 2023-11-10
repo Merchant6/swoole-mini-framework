@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Utils;
+use Swoole\Http\Request;
 
 class Validator
 {   
@@ -9,10 +10,41 @@ class Validator
      * @var array
      */
     private array $errors = [];
+
+    /**
+     * Data array
+     * @var array
+     */
+    private array $data = [];
     
-    public function __construct(private array $data)
+    public function __construct()
     {
 
+    }
+
+    public function requestMake(Request $request, array $data)
+    {
+        $postArray = [];
+        foreach($request->post as $postKey => $postValue)
+        {
+            $postArray[$postKey] = $postValue;
+
+            foreach($data as $dataKey => $dataValue)
+            {
+                if(array_key_exists($dataKey, $postArray))
+                {
+                    var_dump(explode($dataValue));
+                }
+            }
+        }
+
+        // var_dump($postArray);
+    }
+
+    public function make(array $data): self
+    {
+        $this->data = $data;
+        return $this;
     }
 
     public function isValid()
