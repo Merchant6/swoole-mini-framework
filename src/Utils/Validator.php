@@ -34,25 +34,30 @@ class Validator
                 foreach($rules as $method)
                 {  
                     if(str_contains($method,':'))
-                    {
-                        $method = explode(':', $method);
-                        if($method[0] == 'length')
-                        {
-                            return (new \ReflectionMethod($this, $method[0]))
-                            ->invokeArgs($this, [$request->post[$dataKey], $method[1], $method[2]]);
+                    {   
+                        $methodWithArgs = explode(':', $method);
+
+                        if(!method_exists($this, $methodWithArgs[0]))
+                        {   
+                            throw new \BadMethodCallException("Method '$methodWithArgs[0]' does not exists in " . __CLASS__);
                         }
 
-                        if($method[0] == 'regex')
-                        {
-                            return (new \ReflectionMethod($this, $method[0]))
-                            ->invokeArgs($this, [$request->post[$dataKey], $method[1]]);
-                        }
+                        $args =[];
+                        $args[] = $request->post[$dataKey];
+                        $args = array_merge($args, array_slice($methodWithArgs, 1));
+
+                        call_user_func([$this, $methodWithArgs[0]], ...$args);
                     }
 
-                    if(method_exists($this, $method))
-                    {   
-                        call_user_func([$this, $method], $request->post[$dataKey]);
-                    };   
+                    elseif(!str_contains($method,':'))
+                    {
+                        if(!method_exists($this, $method))
+                        {   
+                            throw new \BadMethodCallException("Method '$method' does not exists in " . __CLASS__);
+                        };
+
+                        call_user_func([$this, $method], $request->post[$dataKey]); 
+                    } 
                 }
             }
 

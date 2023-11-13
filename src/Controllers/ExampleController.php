@@ -54,13 +54,13 @@ class ExampleController extends BaseController
     public function form(Validator $validator)
     {
         $validator->make($this->request, [
-            'number'=> 'regex:/^\\d+$/',
+            'text'=> 'length:2:20|email',
         ]);
 
         if($validator->isValid())
         {
             return JsonResponse::json([
-                'data' => 'Number Validated',
+                'data' => 'Text Validated',
             ], 200);
         }
 
