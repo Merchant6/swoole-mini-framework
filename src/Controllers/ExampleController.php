@@ -8,6 +8,7 @@ use App\Entity\Entity;
 use App\Entity\Swoole;
 use App\Utils\Paginator;
 use Swoole\Http\Request;
+
 class ExampleController extends BaseController
 {
     public function __construct(private Request $request)
@@ -15,7 +16,7 @@ class ExampleController extends BaseController
         
     }
 
-    public function index(string $name, JsonResponse $jsonResponse)
+    public function index(string $name, Validator $v)
     {
         $msg = "Hello from $name";
 

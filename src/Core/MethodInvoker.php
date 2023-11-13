@@ -12,6 +12,12 @@ class MethodInvoker
         $this->reflectMethod = new \ReflectionMethod($class, $method);
     }
 
+    /**
+     * This method merges the routes params and method 
+     * params and invoke them using ReflectionMethod class
+     * 
+     * @return mixed
+     */
     public function invoke(): mixed
     {
         $resolvedParams = [];
@@ -31,10 +37,10 @@ class MethodInvoker
             {
                 $paramName = $param->getName();
 
-                $className = ucfirst($paramName);
-                $class = $this->container->get($className);
+                $className = $param->getType()->getName();
+                $classInstance = $this->container->get($className);
 
-                $resolvedParams[$paramName] = $class;
+                $resolvedParams[$paramName] = $classInstance;
             }
 
             continue;

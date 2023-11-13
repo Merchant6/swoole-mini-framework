@@ -62,6 +62,8 @@ class Router
                 $reflector = new MethodInvoker(new $handler[0]($this->request), $handler[1], $vars, $this->container);
                 $invoke = $reflector->invoke();
 
+                // var_dump($handler[0]);
+
                 $responseContent = $invoke;
                 if($this->response->isWritable()) 
                 {
