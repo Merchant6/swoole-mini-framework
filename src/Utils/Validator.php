@@ -11,14 +11,6 @@ class Validator
      */
     private array $errors = [];
 
-    /**
-     * Data array
-     * @var array
-     */
-    private array $data = [];
-
-    private \ReflectionMethod $reflectionMethod;
-    
     public function __construct()
     {
         

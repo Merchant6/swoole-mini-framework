@@ -19,7 +19,7 @@ class ExampleController extends BaseController
     {
         $msg = "Hello from $name";
 
-        return JsonResponse::json([
+        return JsonResponse::make([
             'data' => $msg,
         ], 200);
     }
@@ -48,23 +48,24 @@ class ExampleController extends BaseController
             return $result;
         });
 
-        return JsonResponse::json(['data' => $result], 200);
+        return JsonResponse::make(['data' => $result], 200);
     }
 
     public function form(Validator $validator)
     {
         $validator->make($this->request, [
-            'text'=> 'length:2:20|email',
+            'text'=> 'length:2:20|string',
+            'email' => 'email'
         ]);
 
         if($validator->isValid())
         {
-            return JsonResponse::json([
+            return JsonResponse::make([
                 'data' => 'Text Validated',
             ], 200);
         }
 
-        return JsonResponse::json([
+        return JsonResponse::make([
             'message' => $validator->getErrors(),
         ], 400);
     }
