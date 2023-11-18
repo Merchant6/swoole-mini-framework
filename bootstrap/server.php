@@ -1,9 +1,11 @@
 <?php
 
+use App\Core\CoroutineContext;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use DI\ContainerBuilder;
+
 
 $app = require_once __DIR__ . '/app.php';
 
@@ -25,6 +27,9 @@ $server->on("start", function (Server $server) use($appUrl, $appPort) {
 
 //Can now handle requests
 $server->on("request", function (Request $request, Response $response) use($app) {
+
+    //Setting Coroutine Context for per Request DI
+    CoroutineContext::set('request', $request);
 
     //Initializing the container
     $containerBuilder = new ContainerBuilder();

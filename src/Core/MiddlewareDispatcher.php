@@ -4,6 +4,7 @@ namespace App\Core;
 
 use App\Controllers\ExampleController;
 use App\Routes\Routes;
+use DI\Container;
 use FastRoute\RouteCollector;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -12,7 +13,7 @@ class MiddlewareDispatcher
 {   
     protected $configFile;
 
-    public function __construct(private Request $request, protected Response $response)
+    public function __construct(private Request $request, private Response $response, private Container $container)
     {
         $this->configFile = require(__DIR__ . '/../Config/middlewareConfig.php');
     }
@@ -37,7 +38,8 @@ class MiddlewareDispatcher
             };
         }
         
-        $firstMiddleware = new $config[0]();
+        // $firstMiddleware = $this->container->get($config[0]);
+        $firstMiddleware = new $config[0]($this->request, $this->response, $nextMiddleware);
         $firstMiddleware->handle($this->request, $this->response, $next);
 
         return $this->response;
@@ -62,6 +64,10 @@ class MiddlewareDispatcher
             $controller = $route[2][0];
             $method = $route[2][1];
 
+            $reflectController = new \ReflectionClass($controller);
+            $controllerName = $reflectController->getName();
+            $parentController = $reflectController->getParentClass()->getName();
+
             $middlewareArray = $route[3] ?? null;
 
             if(isset($middlewareArray) && is_array($middlewareArray))
@@ -73,27 +79,27 @@ class MiddlewareDispatcher
                         $middlewareClass = $config[$middlewareAlias];
                         $currentMiddleware = new $middlewareClass;
                         
-                        if($this->matchesRoute($path))
-                        {
-                            $response = $currentMiddleware->handle($this->request, $this->response, function ($request, $response) use ($controller, $method) 
+                        // if($this->matchesRoute($path))
+                        // {
+                            $response = $currentMiddleware->handle($this->request, $this->response, function ($request, $response) use ($parentController, $controllerName, $method) 
                             {
-                                $controller = new $controller($this->request);
+                                $controllerClass = $this->container->get($controllerName);
     
-                                $reflectMethod  = new \ReflectionMethod($controller, $method);
+                                $reflectMethod  = new \ReflectionMethod($controllerClass, $method);
                                 $methodParams = $reflectMethod->getParameters();
                                 if($methodParams)
                                 {
-                                    $reflectMethod->invokeArgs($controller, $methodParams);
+                                    $reflectMethod->invokeArgs($controllerClass, $methodParams);
                                     return $response;
                                 }
                                 
-                                $controller->$method();
+                                $controllerClass->$method();
                                 return $response;
                             });
         
                             $this->response = $response;
                         }
-                    }
+                    // }
                 }
             }
             else
@@ -111,6 +117,7 @@ class MiddlewareDispatcher
     public function matchesRoute($routeUri): bool
     {
         $currentUri = $this->request->server['request_uri'];
+
         if($currentUri == $routeUri)
         {
             return true;

@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Controllers;
+use App\Core\CoroutineContext;
 use App\Core\CoroutineManager;
 use App\Core\JsonResponse;
+use App\Core\RequestContext;
 use App\Utils\Validator;
 use App\Entity\Entity;
 use App\Entity\Swoole;
@@ -10,25 +12,27 @@ use App\Utils\Paginator;
 use Swoole\Http\Request;
 
 class ExampleController extends BaseController
-{
-    public function __construct(private Request $request)
+{    
+
+    
+    public function __construct(private RequestContext $request)
     {
-        
+    
     }
 
-    public function index(string $name, Validator $v)
+    public function index(string $name)
     {
         $msg = "Hello from $name";
 
         return JsonResponse::make([
-            'data' => $msg,
+            'data' => $this->request->getData(),
         ], 200);
     }
 
-    public function get(Entity $entity)
+    public function get(Entity $e)
     {   
-        $result = CoroutineManager::run(1, function () use($entity){
-            $query = $entity->builder()
+        $result = CoroutineManager::run(1, function () use($e){
+            $query = $e->builder()
             ->select('s')    
             ->addSelect(['s.id', 's.fname', 's.lname'])
             ->from(Swoole::class, 's');

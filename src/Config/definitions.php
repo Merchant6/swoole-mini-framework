@@ -20,6 +20,7 @@ $rootPath = __DIR__ . '/../';
 
 $subfolders = ['Controllers', 'Core', 'Database', 'Entity', 'Middlewares', 'Utils'];
 
+$definition = [];
 
 foreach ($subfolders as $subfolder) 
 {   
@@ -44,25 +45,3 @@ foreach ($subfolders as $subfolder)
 }
 
 return $definition;
-
-// return [
-
-//     'request' => create(Request::class),
-//     'response' => create(Response::class),
-
-//     //Controllers
-//     'baseController'=> create(BaseController::class),
-//     'exampleController' => create(ExampleController::class),
-//     'helloController' => create(HelloController::class),
-    
-//     //Core
-//     'coroutineManager' => create(CoroutineManager::class),
-//     'jsonResponse' => create(JsonResponse::class),
-
-//     //Entites
-//     'entity' => create(Entity::class),
-//     'swoole' => create(Swoole::class),
-
-//     //Utils
-//     'paginator' => create(Paginator::class),
-// ];

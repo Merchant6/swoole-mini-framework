@@ -1,21 +1,27 @@
 <?php
 
 namespace App\Core;
+use App\Controllers\BaseController;
 use DI\Container;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use Swoole\Http\Request;
 use Swoole\Http\Response;
 use App\Core\JsonResponse;
+use Swoole\Http\Request;
+use App\Core\RequestFactory;
 
 use function FastRoute\simpleDispatcher;
 
 class Router
 {
 
-    public function __construct(protected Request $request, protected Response $response, protected Container $container)
+    public function __construct(
+        protected Request $request,
+        protected Response $response, 
+        protected Container $container
+        )
     {
-
+        
     }
 
     public function router() : void
@@ -28,13 +34,14 @@ class Router
         $dispatcher = simpleDispatcher(function(RouteCollector $routeCollector){
 
             $routes = include __DIR__ . '/../Routes/Routes.php';
-            
+
             //Applying Route Middlewares
-            (new MiddlewareDispatcher($this->request, $this->response))->routeMiddlewares($routes);
+            (new MiddlewareDispatcher($this->request, $this->response, $this->container))
+            ->routeMiddlewares($routes);
 
             foreach ($routes as $route) {
                 // Add the route handler with applied middlewares
-                $routeCollector->addRoute($route[0], $route[1], [new $route[2][0]($this->request), $route[2][1]]);
+                $routeCollector->addRoute($route[0], $route[1], [$this->container->get($route[2][0]), $route[2][1]]);
             }
         });
 
@@ -59,10 +66,8 @@ class Router
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
 
-                $reflector = new MethodInvoker(new $handler[0]($this->request), $handler[1], $vars, $this->container);
+                $reflector = new MethodInvoker($this->container->get($handler[0]::class), $handler[1], $vars, $this->container);
                 $invoke = $reflector->invoke();
-
-                // var_dump($handler[0]);
 
                 $responseContent = $invoke;
                 if($this->response->isWritable()) 

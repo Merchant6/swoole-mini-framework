@@ -19,7 +19,7 @@ class MethodInvoker
      * @return mixed
      */
     public function invoke(): mixed
-    {
+    {   
         $resolvedParams = [];
 
         foreach($this->routeVars as $name => $value)
@@ -45,10 +45,9 @@ class MethodInvoker
 
             continue;
         }
-
+        
         return $this
         ->reflectMethod
         ->invokeArgs($this->class, $resolvedParams);
-
     }
 }
