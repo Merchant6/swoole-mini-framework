@@ -53,14 +53,20 @@ class Router
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 // ... 404 Not Found
-                $this->response->status(404);
-                $this->response->end('Not Found');
+                if($this->response->isWritable())
+                {
+                    $this->response->status(404);
+                    $this->response->end('Not Found');
+                }
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];
                 // ... 405 Method Not Allowed
-                $this->response->status(405);
-                $this->response->end('Method not allowed');
+                if($this->response->isWritable())
+                {
+                    $this->response->status(405);
+                    $this->response->end('Method not allowed');
+                }
                 break;
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];

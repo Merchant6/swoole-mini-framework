@@ -20,23 +20,23 @@ $server->set([
     'enable_coroutine' => true,
 ]);
 
+//Initializing the container
+$containerBuilder = new ContainerBuilder();
+$containerBuilder->addDefinitions(__DIR__ . '/../src/Config/definitions.php');
+
+$containerBuilder->useAutowiring(true);
+$container = $containerBuilder->build();
+
 //Display information on server start
 $server->on("start", function (Server $server) use($appUrl, $appPort) {
     echo "Swoole http server is started at $appUrl:$appPort\n";
 });
 
 //Can now handle requests
-$server->on("request", function (Request $request, Response $response) use($app) {
+$server->on("request", function (Request $request, Response $response) use($app, $container) {
 
     //Setting Coroutine Context for per Request DI
     CoroutineContext::set('request', $request);
-
-    //Initializing the container
-    $containerBuilder = new ContainerBuilder();
-    $containerBuilder->addDefinitions(__DIR__ . '/../src/Config/definitions.php');
-
-    $containerBuilder->useAutowiring(true);
-    $container = $containerBuilder->build();
 
     //Handling the request
     $app->handle($request, $response, $container);
