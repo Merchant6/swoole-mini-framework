@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\CoroutineContext;
+use App\Core\RequestContext;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -35,8 +36,10 @@ $server->on("start", function (Server $server) use($appUrl, $appPort) {
 //Can now handle requests
 $server->on("request", function (Request $request, Response $response) use($app, $container) {
 
-    //Setting Coroutine Context for per Request DI
-    CoroutineContext::set('request', $request);
+    //Setting up the coroutine context for response
+    $coroutineContext = new CoroutineContext();
+    $coroutineContext->set('request', $request);
+    new RequestContext($coroutineContext);
 
     //Handling the request
     $app->handle($request, $response, $container);

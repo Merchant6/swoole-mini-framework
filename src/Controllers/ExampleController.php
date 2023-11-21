@@ -25,7 +25,7 @@ class ExampleController extends BaseController
         $msg = "Hello from $name";
 
         return JsonResponse::make([
-            'data' => $this->request->getData(),
+            'data' => $this->request->get(),
         ], 200);
     }
 

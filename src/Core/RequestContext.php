@@ -8,9 +8,9 @@ class RequestContext
 {
     protected Request $request; 
 
-    public function __construct()
+    public function __construct(CoroutineContext $coroutineContext)
     {
-        $this->request = CoroutineContext::get('request');
+        $this->request = $coroutineContext->get('request');
     }
 
     public function getInstance()
