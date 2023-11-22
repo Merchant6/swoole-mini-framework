@@ -6,7 +6,7 @@ use Swoole\Http\Request;
 
 class RequestContext
 {
-    protected Request $request; 
+    public Request $request; 
 
     public function __construct(CoroutineContext $coroutineContext)
     {

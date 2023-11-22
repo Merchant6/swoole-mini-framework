@@ -36,7 +36,7 @@ $server->on("start", function (Server $server) use($appUrl, $appPort) {
 //Can now handle requests
 $server->on("request", function (Request $request, Response $response) use($app, $container) {
 
-    //Setting up the coroutine context for response
+    //Setting up the coroutine context for request
     $coroutineContext = new CoroutineContext();
     $coroutineContext->set('request', $request);
     new RequestContext($coroutineContext);

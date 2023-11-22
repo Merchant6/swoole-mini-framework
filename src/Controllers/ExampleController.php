@@ -20,12 +20,12 @@ class ExampleController extends BaseController
     
     }
 
-    public function index(string $name)
+    public function index(string $name, RequestContext $r)
     {
         $msg = "Hello from $name";
 
         return JsonResponse::make([
-            'data' => $this->request->get(),
+            'data' => $name,
         ], 200);
     }
 

@@ -87,9 +87,28 @@ class MiddlewareDispatcher
     
                                 $reflectMethod  = new \ReflectionMethod($controllerClass, $method);
                                 $methodParams = $reflectMethod->getParameters();
+
                                 if($methodParams)
-                                {
-                                    $reflectMethod->invokeArgs($controllerClass, $methodParams);
+                                {   
+                                    $resolvedParams = [];
+                                    foreach($methodParams as $param)
+                                    {
+                                        if(!$param->getType()->isBuiltIn() && is_object($param))
+                                        {
+                                            $paramName = $param->getName();
+
+                                            $className = $param->getType()->getName();
+                                            $classInstance = $this->container->get($className);
+
+                                            $resolvedParams[$paramName] = $classInstance;
+                                        }
+                                        else 
+                                        {
+                                            $resolvedParams[] = $param->getName();
+                                        }
+                                    }
+                                    
+                                    $reflectMethod->invokeArgs($controllerClass, $resolvedParams);
                                     return $response;
                                 }
                                 
@@ -125,4 +144,5 @@ class MiddlewareDispatcher
 
         return false;
     }
+
 }

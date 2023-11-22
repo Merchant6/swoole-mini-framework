@@ -7,9 +7,12 @@ class MethodInvoker
 {   
     private \ReflectionMethod $reflectMethod;
 
+    private array $refelectedParams;
+
     public function __construct(protected object $class, protected string $method, protected mixed $routeVars, protected Container $container)
     {
         $this->reflectMethod = new \ReflectionMethod($class, $method);
+        $this->refelectedParams = $this->reflectMethod->getParameters();
     }
 
     /**
@@ -27,7 +30,7 @@ class MethodInvoker
             $resolvedParams[$name] = $value;
         }
 
-        $refelectedParams = $this->reflectMethod->getParameters();
+        $refelectedParams = $this->refelectedParams;
 
         foreach($refelectedParams as $param)
         {
