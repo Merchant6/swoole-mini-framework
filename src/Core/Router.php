@@ -33,7 +33,8 @@ class Router
         */
         $dispatcher = simpleDispatcher(function(RouteCollector $routeCollector){
 
-            $routes = include __DIR__ . '/../Routes/Routes.php';
+            $collection = new RouteCollection();
+            $routes = $collection->routes;
 
             //Applying Route Middlewares
             (new MiddlewareDispatcher($this->request, $this->response, $this->container))

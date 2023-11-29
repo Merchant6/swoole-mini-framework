@@ -25,20 +25,20 @@ class ExampleController extends BaseController
         $msg = "Hello from $name";
 
         return JsonResponse::make([
-            'data' => $name,
+            'data' => $msg,
         ], 200);
     }
 
-    public function get(Entity $e)
+    public function get(Entity $e, RequestContext $r)
     {   
-        $result = CoroutineManager::run(1, function () use($e){
+        $result = CoroutineManager::run(1, function () use($e, $r){
             $query = $e->builder()
             ->select('s')    
             ->addSelect(['s.id', 's.fname', 's.lname'])
             ->from(Swoole::class, 's');
 
             $paginator = (new Paginator())
-            ->paginate($query, $this->request->get['page'] ?? 1, 20);
+            ->paginate($query, $r->getInstance()->get['page'] ?? 1, 20);
 
             $result = [];
             foreach($paginator->getItems() as $p)
