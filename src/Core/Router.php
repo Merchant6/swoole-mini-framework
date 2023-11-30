@@ -44,6 +44,7 @@ class Router
                 // Add the route handler with applied middlewares
                 $routeCollector->addRoute($route[0], $route[1], [$this->container->get($route[2][0]), $route[2][1]]);
             }
+
         });
 
         $httpMethod = $this->request->server['request_method'];

@@ -62,7 +62,8 @@ class MiddlewareDispatcher
             if ($this->matchesRoute($route)) 
             {
                 $middlewareArray = $route[3];
-                if (isset($middlewareArray) && is_array($middlewareArray)) {
+                if(isset($middlewareArray) && is_array($middlewareArray)) 
+                {
                     foreach ($middlewareArray as $middlewareAlias) {
                         if (array_key_exists($middlewareAlias, $config)) {
                             $middlewareClass = $config[$middlewareAlias];
@@ -96,14 +97,17 @@ class MiddlewareDispatcher
         $reflectMethod = new \ReflectionMethod($controllerClass, $method);
         $methodParams = $reflectMethod->getParameters();
 
-        if ($methodParams) {
+        if ($methodParams) 
+        {
             $resolvedParams = [];
             foreach ($methodParams as $param) {
-                if (!$param->getType()->isBuiltIn() && is_object($param)) {
+                if (!$param->getType()->isBuiltIn() && is_object($param)) 
+                {
                     $paramName = $param->getName();
                     $className = $param->getType()->getName();
                     $classInstance = $this->container->get($className);
                     $resolvedParams[$paramName] = $classInstance;
+
                 } else {
                     $resolvedParams[] = $param->getName();
                 }
@@ -130,7 +134,7 @@ class MiddlewareDispatcher
             {
                 // This will create a regex from the route URI
                 $regexFromRoute = preg_replace_callback('#\{([^:]+):([^\}]+)\}#', function ($matches) {
-
+                    
                     // Use the specified pattern or a default pattern if not specified
                     $pattern = isset($matches[2]) ? $matches[2] : '[^/]+';
 

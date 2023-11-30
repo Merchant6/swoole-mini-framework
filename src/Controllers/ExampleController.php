@@ -56,9 +56,9 @@ class ExampleController extends BaseController
         return JsonResponse::make(['data' => $result], 200);
     }
 
-    public function form(Validator $validator)
+    public function form(Validator $validator, RequestContext $request)
     {
-        $validator->make($this->request, [
+        $validator->make($request, [
             'text'=> 'length:2:20|string',
             'email' => 'email'
         ]);

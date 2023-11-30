@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Utils;
+use App\Core\RequestContext;
 use Swoole\Http\Request;
 
 class Validator
@@ -16,7 +17,7 @@ class Validator
         
     }
 
-    public function make(Request $request, array $data)
+    public function make(RequestContext $request, array $data)
     {
         foreach($data as $dataKey => $dataValue)
         {
