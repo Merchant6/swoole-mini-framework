@@ -13,6 +13,7 @@ use App\Utils\Validator;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 
+use function DI\autowire;
 use function DI\create;
 
 $rootNamespace = "App\\";
@@ -39,7 +40,7 @@ foreach ($subfolders as $subfolder)
 
         if(class_exists($fqcn))
         {
-            $definition[$fileName] = create($fqcn);
+            $definition[$fileName] = autowire($fqcn);
         }
     }
 }

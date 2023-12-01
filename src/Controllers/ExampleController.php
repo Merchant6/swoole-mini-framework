@@ -15,7 +15,7 @@ class ExampleController extends BaseController
 {    
 
     
-    public function __construct(private RequestContext $request)
+    public function __construct()
     {
     
     }

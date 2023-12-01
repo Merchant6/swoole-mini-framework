@@ -1,5 +1,6 @@
 <?php
 use App\Core\Application;
+use Dotenv\Dotenv;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +15,8 @@ use App\Core\Application;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Loading the Dotenv
-require_once __DIR__ . "/../src/Config/dotenv.php";
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 //Initializing the  Application
 $app = new Application();
