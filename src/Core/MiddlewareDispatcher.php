@@ -61,7 +61,7 @@ class MiddlewareDispatcher
         foreach ($routes as $route) {
             if ($this->matchesRoute($route)) 
             {
-                $middlewareArray = $route[3];
+                $middlewareArray = $route[3] ?? null;
                 if(isset($middlewareArray) && is_array($middlewareArray)) 
                 {
                     foreach ($middlewareArray as $middlewareAlias) {
