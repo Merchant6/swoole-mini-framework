@@ -1,15 +1,12 @@
 <?php
 
 namespace App\Controllers;
-use App\Core\CoroutineContext;
-use App\Core\CoroutineManager;
+use App\Core\ConnectionPool;
 use App\Core\JsonResponse;
 use App\Core\RequestContext;
 use App\Utils\Validator;
-use App\Entity\Entity;
 use App\Entity\Swoole;
 use App\Utils\Paginator;
-use Swoole\Http\Request;
 
 class ExampleController extends BaseController
 {    
@@ -25,8 +22,39 @@ class ExampleController extends BaseController
         
     }
 
-    public function get(Entity $e, RequestContext $r)
+    public function get(ConnectionPool $pool, RequestContext $r)
     {   
+        $pooledQuery = $pool->run(function($conn){
+
+            $query = $conn->createQueryBuilder()
+            ->select('s')    
+            ->addSelect(['s.fname', 's.lname'])
+            ->from(Swoole::class, 's'); 
+
+            return $query;
+            
+        });
+
+        $paginator = (new Paginator())
+        ->paginate($pooledQuery, $r->getInstance()->get['page'] ?? 1);
+            
+        $result = [];
+        foreach($paginator->getItems() as $p)
+        {
+            $result[] = [
+                'fname' => $p['fname'],
+                'lname' => $p['lname'],
+            ];
+        }
+
+        return JsonResponse::make([
+            'data' => $result
+        ], 200);
+        
+    }
+
+    public function pooled(RequestContext $requestContext)
+    {
         
     }
 
