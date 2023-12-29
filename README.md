@@ -25,11 +25,13 @@ Make sure you have Composer installed. Then, run the following command to instal
 Create a `.env` file in the project root and configure your environment variables:
 
 ```
+#Application
 APP_ENV=local
 APP_URL=http://127.0.0.1
 APP_PORT=9501   
 APP_NAME=Swoole
 
+#Database
 DB_DATABASE=database
 DB_USER=user
 DB_PASS=password
@@ -37,6 +39,11 @@ DB_HOST=host
 DB_PORT=port
 DB_DRIVER=pdo_mysql
 
+#Connection Pool
+MAX_CONNECTIONS = 10
+MIN_CONNECTIONS = 5
+MAX_AQUIRE_TIME = 1
+MAX_IDLE_TIME = 1
 ```
 
 ### Run the Application
